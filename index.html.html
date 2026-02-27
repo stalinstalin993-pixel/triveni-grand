@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triveni Grand — Kanyakumari</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+  :root {
+    --ocean: #0d2b45;
+    --deep: #061824;
+    --tide: #1a4a6b;
+    --sky: #2e7bb4;
+    --foam: #f0f7ff;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --sand: #f5efe6;
+    --coral: #e07850;
+    --white: #ffffff;
+    --text-dark: #1a1a2e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    color: var(--text-dark);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* ── WAVE SVG DIVIDER ── */
+  .wave-divider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+  .wave-divider svg {
+    display: block;
+    width: 100%;
+  }
+  @keyframes waveFlow {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .wave-animate {
+    animation: waveFlow 8s linear infinite;
+    width: 200%;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 1.2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+  }
+  nav.scrolled {
+    background: rgba(6, 24, 36, 0.95);
+    backdrop-filter: blur(12px);
+    padding: 0.9rem 3rem;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--white);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+  .logo span { color: var(--gold); font-style: italic; }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 400;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold-light); }
+  .nav-book {
+    background: var(--gold);
+    color: var(--deep) !important;
+    padding: 0.55rem 1.4rem !important;
+    font-weight: 600 !important;
+    border-radius: 2px;
+    transition: background 0.3s !important;
+  }
+  .nav-book:hover { background: var(--gold-light) !important; }
+
+  /* Hamburger */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+  }
+  .hamburger span {
+    display: block;
+    width: 26px;
+    height: 2px;
+    background: var(--white);
+    transition: all 0.3s;
+    border-radius: 2px;
+  }
+  .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--deep);
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    font-weight: 300;
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+  .mobile-menu a:hover { color: var(--gold); }
+  .mobile-menu .m-book {
+    background: var(--gold);
+    color: var(--deep) !important;
+    padding: 0.8rem 2.5rem;
+    font-size: 1.1rem !important;
+    font-family: 'Jost', sans-serif !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.12em;
+    border-radius: 2px;
+    margin-top: 1rem;
+  }
+
+  /* ── STICKY BOOK NOW ── */
+  .sticky-book {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 2rem;
+    z-index: 900;
+    background: var(--gold);
+    color: var(--deep);
+    padding: 0.9rem 1.8rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    cursor: pointer;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.5);
+    transition: all 0.3s;
+    border: none;
+    animation: pulseGold 2.5s ease-in-out infinite;
+  }
+  @keyframes pulseGold {
+    0%, 100% { box-shadow: 0 8px 30px rgba(201,168,76,0.5); }
+    50% { box-shadow: 0 8px 45px rgba(201,168,76,0.8); }
+  }
+  .sticky-book:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    height: 100vh;
+    min-height: 700px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(to bottom, rgba(6,24,36,0.3) 0%, rgba(6,24,36,0.15) 40%, rgba(6,24,36,0.7) 100%),
+      linear-gradient(135deg, #0d2b45 0%, #1a4a6b 30%, #2e7bb4 60%, #e07850 85%, #c9a84c 100%);
+    animation: heroShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes heroShift {
+    0% { filter: brightness(0.95) saturate(1.1); }
+    100% { filter: brightness(1.05) saturate(1.2); }
+  }
+  /* Sunrise orb */
+  .sun-orb {
+    position: absolute;
+    bottom: 35%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #ffd066 0%, #e8922a 50%, rgba(224,120,80,0) 70%);
+    filter: blur(2px);
+    opacity: 0.7;
+    animation: sunRise 8s ease-in-out infinite alternate;
+  }
+  @keyframes sunRise {
+    0% { transform: translateX(-50%) translateY(20px); opacity: 0.6; }
+    100% { transform: translateX(-50%) translateY(-20px); opacity: 0.85; }
+  }
+  /* Water shimmer */
+  .water-shimmer {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, transparent, rgba(46,123,180,0.3) 50%, rgba(13,43,69,0.6));
+    backdrop-filter: blur(0.5px);
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    color: var(--white);
+    padding: 0 1.5rem;
+    max-width: 800px;
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 1.2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .hero-tagline {
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-weight: 300;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.05em;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.9s forwards;
+  }
+  .hero-cta {
+    display: inline-flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 1.2s forwards;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--deep);
+    padding: 1rem 2.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    padding: 1rem 2.5rem;
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.1); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── BOOKING BAR ── */
+  .booking-bar {
+    background: var(--white);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+    position: relative;
+    z-index: 10;
+    margin: -2.5rem 3rem 0;
+    border-radius: 4px;
+    padding: 0;
+  }
+  .booking-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr auto;
+    align-items: stretch;
+  }
+  .booking-field {
+    padding: 1.4rem 1.8rem;
+    border-right: 1px solid #e8edf2;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .booking-field:hover { background: var(--foam); }
+  .booking-field label {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--sky);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .booking-field input, .booking-field select {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--ocean);
+    background: transparent;
+    cursor: pointer;
+  }
+  .booking-submit {
+    background: var(--ocean);
+    color: var(--white);
+    border: none;
+    padding: 0 2.5rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s;
+    border-radius: 0 4px 4px 0;
+    white-space: nowrap;
+  }
+  .booking-submit:hover { background: var(--tide); }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 3rem; }
+
+  .section-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    color: var(--ocean);
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+  }
+  .section-title em { font-style: italic; color: var(--sky); }
+  .section-body {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #5a6a7a;
+    max-width: 560px;
+  }
+
+  /* ── FEATURES ── */
+  .features-section {
+    background: var(--sand);
+    padding: 6rem 3rem;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3.5rem;
+  }
+  .feature-card {
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 60px rgba(13,43,69,0.15);
+  }
+  .feature-img {
+    height: 220px;
+    position: relative;
+    overflow: hidden;
+  }
+  .feature-img-sunrise {
+    background: linear-gradient(135deg, #e8922a, #f0c040, #2e7bb4, #0d2b45);
+  }
+  .feature-img-rock {
+    background: linear-gradient(135deg, #0d2b45, #1a6b5a, #2e7bb4, #1a4a6b);
+  }
+  .feature-img-dining {
+    background: linear-gradient(135deg, #8b2e0d, #c9502a, #e8922a, #f0c040);
+  }
+  .feature-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3.5rem;
+    opacity: 0.9;
+  }
+  .feature-body { padding: 1.8rem; }
+  .feature-body h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.45rem;
+    font-weight: 400;
+    color: var(--ocean);
+    margin-bottom: 0.7rem;
+  }
+  .feature-body p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #6a7a8a;
+    margin-bottom: 1rem;
+  }
+  .feature-link {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 2px;
+    transition: color 0.3s;
+  }
+  .feature-link:hover { color: var(--coral); border-color: var(--coral); }
+
+  /* ── ROOMS ── */
+  .rooms-section { background: var(--ocean); padding: 6rem 3rem; }
+  .rooms-section .section-title { color: var(--white); }
+  .rooms-section .section-body { color: rgba(255,255,255,0.65); }
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .room-card {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+  }
+  .room-card:hover { border-color: var(--gold); transform: scale(1.02); }
+  .room-card:hover .room-overlay { opacity: 1; }
+  .room-thumb {
+    height: 200px;
+    position: relative;
+  }
+  .room-thumb-1 { background: linear-gradient(135deg, #1a4a6b, #e07850 80%); }
+  .room-thumb-2 { background: linear-gradient(135deg, #0d2b45, #2e7bb4 70%, #c9a84c); }
+  .room-thumb-3 { background: linear-gradient(135deg, #061824, #1a6b5a 60%, #2e7bb4); }
+  .room-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(201,168,76,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .room-overlay span {
+    color: var(--white);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border: 1px solid var(--white);
+    padding: 0.6rem 1.2rem;
+  }
+  .room-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    opacity: 0.5;
+    padding: 0.2rem 0;
+    text-transform: uppercase;
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    background: rgba(0,0,0,0.4);
+    padding: 0.3rem 0.7rem;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+  .room-info { padding: 1.4rem; }
+  .room-info h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--white);
+    font-weight: 400;
+    margin-bottom: 0.4rem;
+  }
+  .room-info .price {
+    color: var(--gold-light);
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+  }
+  .room-info .price strong {
+    font-size: 1.4rem;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .room-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .room-tag {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.6);
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+  }
+  .rooms-cta {
+    text-align: center;
+    margin-top: 3rem;
+  }
+  .btn-gold-outline {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 1rem 2.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-radius: 2px;
+  }
+  .btn-gold-outline:hover { background: var(--gold); color: var(--deep); }
+
+  /* ── LANDMARKS ── */
+  .landmarks-section {
+    background: var(--foam);
+    padding: 6rem 3rem;
+  }
+  .landmarks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    margin-top: 3rem;
+    align-items: center;
+  }
+  .landmark-list { list-style: none; }
+  .landmark-item {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid #d8e8f0;
+  }
+  .landmark-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .landmark-name {
+    font-weight: 500;
+    color: var(--ocean);
+    font-size: 0.95rem;
+  }
+  .landmark-dist {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--sky);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .map-visual {
+    background: linear-gradient(135deg, #0d2b45 0%, #1a4a6b 40%, #2e7bb4 70%, #e07850 100%);
+    border-radius: 6px;
+    height: 380px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .map-grid {
+    position: absolute;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .map-pin {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+  }
+  .pin-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid var(--white);
+    box-shadow: 0 0 0 6px rgba(201,168,76,0.2);
+    animation: pingPulse 2s ease-in-out infinite;
+  }
+  .pin-dot.hotel { background: var(--coral); box-shadow: 0 0 0 6px rgba(224,120,80,0.2); }
+  @keyframes pingPulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(201,168,76,0.3); }
+    50% { box-shadow: 0 0 0 10px rgba(201,168,76,0); }
+  }
+  .pin-label {
+    background: rgba(0,0,0,0.7);
+    color: var(--white);
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    margin-top: 4px;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials-section { background: var(--white); padding: 6rem 3rem; }
+  .testimonial-slider {
+    margin-top: 3rem;
+    position: relative;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  .testimonial {
+    display: none;
+    animation: fadeIn 0.5s ease;
+  }
+  .testimonial.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .testimonial-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--ocean);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  .testimonial-text::before { content: '"'; color: var(--gold); font-size: 3rem; line-height: 0; vertical-align: -0.5rem; margin-right: 0.3rem; }
+  .testimonial-text::after { content: '"'; color: var(--gold); font-size: 3rem; line-height: 0; vertical-align: -0.5rem; margin-left: 0.3rem; }
+  .reviewer-name {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sky);
+    font-weight: 600;
+  }
+  .reviewer-origin {
+    font-size: 0.8rem;
+    color: #9aaabb;
+    margin-top: 0.2rem;
+  }
+  .stars { color: var(--gold); font-size: 1rem; margin-bottom: 1rem; }
+  .slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .slider-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #d0dde8;
+    border-radius: 50%;
+    background: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    font-size: 1rem;
+  }
+  .slider-btn:hover { background: var(--ocean); border-color: var(--ocean); color: var(--white); }
+  .slider-dots {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d0dde8;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+  .slider-dot.active { background: var(--gold); transform: scale(1.3); }
+
+  /* ── DINING ── */
+  .dining-section {
+    background: var(--deep);
+    padding: 6rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .dining-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 60%);
+  }
+  .dining-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+  }
+  .dining-section .section-title { color: var(--white); }
+  .dining-section .section-body { color: rgba(255,255,255,0.6); }
+  .menu-preview { margin-top: 2rem; }
+  .menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.9rem 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
+  }
+  .menu-item-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--white);
+    font-style: italic;
+  }
+  .menu-item-desc { font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .menu-item-price { color: var(--gold-light); font-weight: 600; font-size: 0.9rem; }
+  .dining-visual {
+    background: linear-gradient(135deg, #8b2e0d, #c9502a 50%, #e8922a);
+    border-radius: 6px;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .dining-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.4), transparent);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6,24,36,0.85);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--white);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 580px;
+    padding: 2.5rem;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #9aaabb;
+    transition: color 0.3s;
+  }
+  .modal-close:hover { color: var(--ocean); }
+  .modal h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--ocean);
+    margin-bottom: 0.5rem;
+  }
+  .modal p { color: #6a7a8a; font-size: 0.9rem; margin-bottom: 2rem; }
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-group.full { grid-column: span 2; }
+  .form-group label {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--sky);
+    font-weight: 600;
+  }
+  .form-group input, .form-group select {
+    border: 1px solid #d0dde8;
+    border-radius: 3px;
+    padding: 0.75rem 1rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.95rem;
+    color: var(--ocean);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--sky); }
+  .error-msg { color: #e55; font-size: 0.78rem; display: none; }
+  .error-msg.show { display: block; }
+  .btn-check {
+    width: 100%;
+    background: var(--ocean);
+    color: var(--white);
+    border: none;
+    padding: 1rem;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    margin-top: 1rem;
+    transition: background 0.3s;
+  }
+  .btn-check:hover { background: var(--tide); }
+  .modal-success {
+    text-align: center;
+    padding: 2rem 0;
+    display: none;
+  }
+  .modal-success.show { display: block; }
+  .modal-success .tick { font-size: 3rem; margin-bottom: 1rem; }
+  .modal-success h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--ocean);
+    margin-bottom: 0.5rem;
+  }
+  .modal-success p { color: #6a7a8a; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--deep);
+    padding: 4rem 3rem 2rem;
+    color: rgba(255,255,255,0.6);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+  .footer-brand .logo { display: block; margin-bottom: 1rem; }
+  .footer-brand p { font-size: 0.88rem; line-height: 1.7; max-width: 240px; }
+  .footer-col h4 {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul li a {
+    color: rgba(255,255,255,0.55);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.3s;
+  }
+  .footer-col ul li a:hover { color: var(--gold-light); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav.scrolled { padding: 0.8rem 1.5rem; }
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    section { padding: 4rem 1.5rem; }
+    .features-section { padding: 4rem 1.5rem; }
+    .features-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .rooms-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .landmarks-grid { grid-template-columns: 1fr; }
+    .dining-grid { grid-template-columns: 1fr; }
+    .dining-visual { height: 250px; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .booking-bar { margin: -2rem 1rem 0; }
+    .booking-inner { grid-template-columns: 1fr 1fr; }
+    .booking-field:nth-child(3), .booking-field:nth-child(4) { border-top: 1px solid #e8edf2; }
+    .booking-submit { grid-column: span 2; border-radius: 0 0 4px 4px; padding: 1rem; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: span 1; }
+    .hero-title { font-size: 2.5rem; }
+  }
+
+  @media (max-width: 480px) {
+    .logo { font-size: 1.4rem; }
+    .sticky-book { right: 1rem; bottom: 1rem; padding: 0.8rem 1.3rem; font-size: 0.75rem; }
+    .booking-inner { grid-template-columns: 1fr; }
+    .booking-submit { border-radius: 0 0 4px 4px; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero-cta { flex-direction: column; align-items: center; }
+  }
+
+  /* scroll fade animations */
+  .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#" class="logo">Triveni <span>Grand</span></a>
+  <ul class="nav-links">
+    <li><a href="#rooms">Rooms</a></li>
+    <li><a href="#features">Experiences</a></li>
+    <li><a href="#dining">Dining</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#" class="nav-book" onclick="openModal()">Book Now</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#rooms" onclick="toggleMenu()">Rooms</a>
+  <a href="#features" onclick="toggleMenu()">Experiences</a>
+  <a href="#dining" onclick="toggleMenu()">Dining</a>
+  <a href="#testimonials" onclick="toggleMenu()">Reviews</a>
+  <a href="#" class="m-book" onclick="toggleMenu(); openModal();">Check Availability</a>
+</div>
+
+<!-- STICKY BOOK NOW -->
+<button class="sticky-book" onclick="openModal()">Book Now</button>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="sun-orb"></div>
+  <div class="water-shimmer"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Kanyakumari, Tamil Nadu</p>
+    <h1 class="hero-title">Where Three Seas<br>Meet <em>Your Comfort</em></h1>
+    <p class="hero-tagline">Perched at the confluence of the Arabian Sea, Bay of Bengal & Indian Ocean —<br>experience dawn like nowhere else on earth.</p>
+    <div class="hero-cta">
+      <a href="#" class="btn-primary" onclick="openModal()">Check Availability</a>
+      <a href="#features" class="btn-ghost">Explore the Property</a>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING BAR -->
+<div class="booking-bar" id="booking">
+  <div class="booking-inner">
+    <div class="booking-field">
+      <label>Check In</label>
+      <input type="date" id="checkIn" />
+    </div>
+    <div class="booking-field">
+      <label>Check Out</label>
+      <input type="date" id="checkOut" />
+    </div>
+    <div class="booking-field">
+      <label>Guests</label>
+      <select>
+        <option>1 Guest</option>
+        <option selected>2 Guests</option>
+        <option>3 Guests</option>
+        <option>4 Guests</option>
+        <option>5+ Guests</option>
+      </select>
+    </div>
+    <div class="booking-field">
+      <label>Room Type</label>
+      <select>
+        <option>Sunrise Sea View</option>
+        <option>Deluxe Ocean Suite</option>
+        <option>Presidential Suite</option>
+        <option>Heritage Room</option>
+      </select>
+    </div>
+    <button class="booking-submit" onclick="validateBookingBar()">Check Availability</button>
+  </div>
+</div>
+
+<!-- WAVE DIVIDER -->
+<div class="wave-divider" style="background:white; margin-top: 2rem;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="wg1" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" style="stop-color:#f5efe6"/>
+        <stop offset="100%" style="stop-color:#f5efe6"/>
+      </linearGradient>
+    </defs>
+    <path class="wave-animate" d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 C1680,60 1920,0 2160,30 C2400,60 2640,0 2880,30 L2880,60 L0,60 Z" fill="#f5efe6"/>
+  </svg>
+</div>
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div style="text-align:center; max-width:600px; margin:0 auto;">
+    <p class="section-eyebrow reveal">Curated Experiences</p>
+    <h2 class="section-title reveal reveal-delay-1">The Soul of <em>Kanyakumari</em></h2>
+    <p class="section-body reveal reveal-delay-2" style="margin: 0 auto;">Every stay is a journey through sacred landscapes, mythological wonders, and flavors that have defined this coastline for centuries.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-img feature-img-sunrise">
+        <span class="feature-icon">🌅</span>
+      </div>
+      <div class="feature-body">
+        <h3>Sunrise View Rooms</h3>
+        <p>Wake before the world and watch the sky ignite. Our east-facing rooms are positioned to capture the exact moment three seas blush gold — a sacred spectacle occurring daily at this unique tip of India.</p>
+        <a href="#rooms" class="feature-link">Explore Rooms →</a>
+      </div>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-img feature-img-rock">
+        <span class="feature-icon">🏛️</span>
+      </div>
+      <div class="feature-body">
+        <h3>Proximity to Vivekananda Rock</h3>
+        <p>Steps from the legendary rock where Swami Vivekananda meditated. Our concierge arranges sunrise ferry rides, guided spiritual tours, and private meditation sessions with local scholars.</p>
+        <a href="#landmarks" class="feature-link">View Distance Map →</a>
+      </div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-img feature-img-dining">
+        <span class="feature-icon">🍛</span>
+      </div>
+      <div class="feature-body">
+        <h3>Authentic South Indian Dining</h3>
+        <p>From crispy Kanyakumari-style fish fry to Chettinad feasts under the stars — our chefs source ingredients from local fishermen and spice traders each morning for the freshest coastal cuisine.</p>
+        <a href="#dining" class="feature-link">View Our Menu →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE DIVIDER 2 -->
+<div class="wave-divider" style="background:#f5efe6;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path class="wave-animate" d="M0,20 C360,55 720,0 1080,35 C1260,52 1380,15 1440,25 C1620,45 1800,5 2160,30 C2400,50 2640,10 2880,20 L2880,60 L0,60 Z" fill="#0d2b45"/>
+  </svg>
+</div>
+
+<!-- ROOMS -->
+<section class="rooms-section" id="rooms">
+  <div style="max-width:560px;">
+    <p class="section-eyebrow">Accommodations</p>
+    <h2 class="section-title reveal">Sleep to the Sound of <em>the Ocean</em></h2>
+    <p class="section-body reveal reveal-delay-1">Every room at Triveni Grand is a sanctuary of coastal calm, designed with handcrafted Kerala teak furniture, original local artwork, and floor-to-ceiling sea views.</p>
+  </div>
+  <div class="rooms-grid">
+    <div class="room-card reveal">
+      <div class="room-thumb room-thumb-1">
+        <span class="room-label">Most Popular</span>
+        <div class="room-overlay"><span>Select Room</span></div>
+      </div>
+      <div class="room-info">
+        <h3>Sunrise Sea View Room</h3>
+        <div class="price">From <strong>₹8,500</strong> / night</div>
+        <div class="room-tags">
+          <span class="room-tag">Sea View</span>
+          <span class="room-tag">King Bed</span>
+          <span class="room-tag">Balcony</span>
+          <span class="room-tag">Free Wifi</span>
+        </div>
+      </div>
+    </div>
+    <div class="room-card reveal reveal-delay-1">
+      <div class="room-thumb room-thumb-2">
+        <span class="room-label">Luxury</span>
+        <div class="room-overlay"><span>Select Room</span></div>
+      </div>
+      <div class="room-info">
+        <h3>Deluxe Ocean Suite</h3>
+        <div class="price">From <strong>₹14,500</strong> / night</div>
+        <div class="room-tags">
+          <span class="room-tag">Ocean Suite</span>
+          <span class="room-tag">Living Area</span>
+          <span class="room-tag">Bath Tub</span>
+          <span class="room-tag">Butler</span>
+        </div>
+      </div>
+    </div>
+    <div class="room-card reveal reveal-delay-2">
+      <div class="room-thumb room-thumb-3">
+        <span class="room-label">Signature</span>
+        <div class="room-overlay"><span>Select Room</span></div>
+      </div>
+      <div class="room-info">
+        <h3>Presidential Suite</h3>
+        <div class="price">From <strong>₹28,000</strong> / night</div>
+        <div class="room-tags">
+          <span class="room-tag">360° View</span>
+          <span class="room-tag">Private Pool</span>
+          <span class="room-tag">2 Bedrooms</span>
+          <span class="room-tag">Chef</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rooms-cta">
+    <button class="btn-gold-outline" onclick="openModal()">Check All Availability</button>
+  </div>
+</section>
+
+<!-- WAVE DIVIDER 3 -->
+<div class="wave-divider" style="background:#0d2b45;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+    <path class="wave-animate" d="M0,40 C180,10 360,55 540,30 C720,5 900,50 1080,30 C1260,10 1380,45 1440,40 C1620,25 1800,50 2160,35 C2400,20 2640,50 2880,40 L2880,60 L0,60 Z" fill="#f0f7ff"/>
+  </svg>
+</div>
+
+<!-- LANDMARKS -->
+<section class="landmarks-section" id="landmarks">
+  <div style="text-align:center; max-width:560px; margin:0 auto 3rem;">
+    <p class="section-eyebrow reveal">Location</p>
+    <h2 class="section-title reveal reveal-delay-1">At the Edge of <em>India</em></h2>
+    <p class="section-body reveal reveal-delay-2" style="margin:0 auto;">Triveni Grand sits at the southernmost tip — every iconic landmark is moments away.</p>
+  </div>
+  <div class="landmarks-grid">
+    <ul class="landmark-list reveal">
+      <li class="landmark-item">
+        <div class="landmark-dot"></div>
+        <span class="landmark-name">🏛️ Vivekananda Rock Memorial</span>
+        <span class="landmark-dist">0.4 km</span>
+      </li>
+      <li class="landmark-item">
+        <div class="landmark-dot"></div>
+        <span class="landmark-name">🗽 Thiruvalluvar Statue</span>
+        <span class="landmark-dist">0.6 km</span>
+      </li>
+      <li class="landmark-item">
+        <div class="landmark-dot"></div>
+        <span class="landmark-name">🕌 Bhagavathy Amman Temple</span>
+        <span class="landmark-dist">0.2 km</span>
+      </li>
+      <li class="landmark-item">
+        <div class="landmark-dot"></div>
+        <span class="landmark-name">🏖️ Kanyakumari Beach</span>
+        <span class="landmark-dist">0.1 km</span>
+      </li>
+      <li class="landmark-item">
+        <div class="landmark-dot"></div>
+        <span class="landmark-name">✈️ Trivandrum Airport</span>
+        <span class="landmark-dist">88 km</span>
+      </li>
+      <li class="landmark-item">
+        <div class="landmark-dot"></div>
+        <span class="landmark-name">🚂 Kanyakumari Railway Station</span>
+        <span class="landmark-dist">1.2 km</span>
+      </li>
+    </ul>
+    <div class="map-visual reveal reveal-delay-1">
+      <div class="map-grid"></div>
+      <div class="map-pin" style="top:42%; left:47%;">
+        <div class="pin-dot hotel"></div>
+        <div class="pin-label">Triveni Grand</div>
+      </div>
+      <div class="map-pin" style="top:55%; left:62%;">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Vivekananda Rock</div>
+      </div>
+      <div class="map-pin" style="top:60%; left:68%;">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Thiruvalluvar</div>
+      </div>
+      <div class="map-pin" style="top:35%; left:40%;">
+        <div class="pin-dot"></div>
+        <div class="pin-label">Amman Temple</div>
+      </div>
+      <div class="map-pin" style="top:70%; left:50%;">
+        <div class="pin-dot"></div>
+        <div class="pin-label">KK Beach</div>
+      </div>
+      <div style="position:absolute; bottom:1rem; left:50%; transform:translateX(-50%); text-align:center; color:rgba(255,255,255,0.5); font-size:0.7rem; letter-spacing:0.1em;">CONFLUENCE POINT — THREE SEAS</div>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE 4 -->
+<div class="wave-divider" style="background:#f0f7ff;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+    <path class="wave-animate" d="M0,25 C300,55 600,5 900,35 C1050,50 1300,10 1440,30 C1680,55 1920,0 2160,28 C2400,55 2640,5 2880,25 L2880,60 L0,60 Z" fill="#061824"/>
+  </svg>
+</div>
+
+<!-- DINING -->
+<section class="dining-section" id="dining">
+  <div class="dining-grid">
+    <div>
+      <p class="section-eyebrow reveal">Restaurant & Bar</p>
+      <h2 class="section-title reveal reveal-delay-1">Mukkodi <em>Kitchen</em></h2>
+      <p class="section-body reveal reveal-delay-2">Named after the sacred confluence, our kitchen celebrates the bounty of three seas. Head Chef Murugesan sources fresh catch directly from fishermen each dawn — the menu changes daily with what the ocean offers.</p>
+      <div class="menu-preview reveal reveal-delay-3">
+        <div class="menu-item">
+          <div>
+            <div class="menu-item-name">Kanyakumari Fish Curry</div>
+            <div class="menu-item-desc">Freshwater pearl spot, Chettinad spices, banana leaf</div>
+          </div>
+          <div class="menu-item-price">₹780</div>
+        </div>
+        <div class="menu-item">
+          <div>
+            <div class="menu-item-name">Crab Masala Varuval</div>
+            <div class="menu-item-desc">Mud crab, toasted coconut, curry leaf tempering</div>
+          </div>
+          <div class="menu-item-price">₹1,200</div>
+        </div>
+        <div class="menu-item">
+          <div>
+            <div class="menu-item-name">Sunrise Thali</div>
+            <div class="menu-item-desc">7-course traditional breakfast, seasonal produce</div>
+          </div>
+          <div class="menu-item-price">₹650</div>
+        </div>
+        <div class="menu-item">
+          <div>
+            <div class="menu-item-name">Three Seas Prawn Biryani</div>
+            <div class="menu-item-desc">Tiger prawns, dum-cooked Seeraga Samba rice, saffron</div>
+          </div>
+          <div class="menu-item-price">₹1,100</div>
+        </div>
+      </div>
+    </div>
+    <div class="dining-visual reveal reveal-delay-1">
+      <span style="position:relative; z-index:1;">🍽️</span>
+    </div>
+  </div>
+</section>
+
+<!-- WAVE 5 -->
+<div class="wave-divider" style="background:#061824;">
+  <svg viewBox="0 0 1440 60" preserveAspectRatio="none">
+    <path class="wave-animate" d="M0,35 C240,10 480,55 720,25 C960,0 1200,50 1440,30 C1680,10 1920,50 2160,30 C2400,10 2640,50 2880,35 L2880,60 L0,60 Z" fill="#ffffff"/>
+  </svg>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div style="text-align:center;">
+    <p class="section-eyebrow reveal">Guest Stories</p>
+    <h2 class="section-title reveal reveal-delay-1" style="text-align:center;">Words from Our <em>Guests</em></h2>
+  </div>
+  <div class="testimonial-slider">
+    <div class="testimonial active">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">Waking up to the sunrise at Triveni Grand is a life-altering experience. The moment the sun rose between the Vivekananda Rock and our balcony — I understood why this place is considered sacred.</p>
+      <div class="reviewer-name">Priya Krishnamurthy</div>
+      <div class="reviewer-origin">Chennai, Tamil Nadu</div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">The Presidential Suite is extraordinary. Waking to three oceans meeting at your feet while sipping filter coffee on a private terrace — nothing compares. The staff anticipated our every need.</p>
+      <div class="reviewer-name">Arjun & Meera Nair</div>
+      <div class="reviewer-origin">Bangalore, Karnataka</div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">The fish curry at Mukkodi Kitchen was the finest meal of our entire 3-week India trip. Fresh, spiced perfectly, and served by incredibly warm people. We extended our stay by two nights just for the food.</p>
+      <div class="reviewer-name">Sophie & Henri Blanchard</div>
+      <div class="reviewer-origin">Paris, France</div>
+    </div>
+    <div class="slider-controls">
+      <button class="slider-btn" onclick="changeSlide(-1)">←</button>
+      <div class="slider-dots">
+        <button class="slider-dot active" onclick="goSlide(0)"></button>
+        <button class="slider-dot" onclick="goSlide(1)"></button>
+        <button class="slider-dot" onclick="goSlide(2)"></button>
+      </div>
+      <button class="slider-btn" onclick="changeSlide(1)">→</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo">Triveni <span>Grand</span></a>
+      <p>Where three seas embrace India's southernmost tip. A sanctuary of coastal luxury, spiritual heritage, and authentic southern hospitality.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#rooms">Our Rooms</a></li>
+        <li><a href="#dining">Dining</a></li>
+        <li><a href="#features">Experiences</a></li>
+        <li><a href="#landmarks">Location</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Information</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Spa & Wellness</a></li>
+        <li><a href="#">Weddings</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="#">Beach Road, Kanyakumari</a></li>
+        <li><a href="#">Tamil Nadu – 629702</a></li>
+        <li><a href="#">+91 94870 00000</a></li>
+        <li><a href="#">stay@trivenig.com</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Triveni Grand Kanyakumari. All rights reserved.</span>
+    <span>Privacy Policy · Terms · Cancellation Policy</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modalForm">
+      <h2>Check Availability</h2>
+      <p>Find your perfect room at Triveni Grand, Kanyakumari.</p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Check In</label>
+          <input type="date" id="mCheckIn" />
+          <span class="error-msg" id="errCheckIn">Please select check-in date</span>
+        </div>
+        <div class="form-group">
+          <label>Check Out</label>
+          <input type="date" id="mCheckOut" />
+          <span class="error-msg" id="errCheckOut">Check-out must be after check-in</span>
+        </div>
+        <div class="form-group">
+          <label>Guests</label>
+          <select>
+            <option>1 Guest</option>
+            <option selected>2 Guests</option>
+            <option>3 Guests</option>
+            <option>4 Guests</option>
+            <option>5+ Guests</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Room Type</label>
+          <select>
+            <option>Any Available</option>
+            <option>Sunrise Sea View</option>
+            <option>Deluxe Ocean Suite</option>
+            <option>Presidential Suite</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Full Name</label>
+          <input type="text" id="mName" placeholder="Your name" />
+          <span class="error-msg" id="errName">Please enter your name</span>
+        </div>
+        <div class="form-group full">
+          <label>Email</label>
+          <input type="email" id="mEmail" placeholder="your@email.com" />
+          <span class="error-msg" id="errEmail">Please enter a valid email</span>
+        </div>
+      </div>
+      <span class="error-msg" id="errGeneral" style="display:none; margin-bottom:0.5rem;"></span>
+      <button class="btn-check" onclick="submitBooking()">Check Availability</button>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="tick">✅</div>
+      <h3>You're on the List!</h3>
+      <p>We've received your request and will send availability details to your email within 30 minutes.<br><br>Get ready to wake up to three seas, <strong id="successName"></strong>.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Navbar scroll
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Hamburger
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // Modal
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Pre-fill dates from booking bar
+    const ci = document.getElementById('checkIn').value;
+    const co = document.getElementById('checkOut').value;
+    if (ci) document.getElementById('mCheckIn').value = ci;
+    if (co) document.getElementById('mCheckOut').value = co;
+    setMinDates();
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeModalOnOverlay(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+
+  // Date min values
+  function setMinDates() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('checkIn').min = today;
+    document.getElementById('mCheckIn').min = today;
+    document.getElementById('checkIn').addEventListener('change', function() {
+      document.getElementById('checkOut').min = this.value;
+    });
+    document.getElementById('mCheckIn').addEventListener('change', function() {
+      document.getElementById('mCheckOut').min = this.value;
+    });
+  }
+  setMinDates();
+
+  // Date validation for booking bar
+  function validateBookingBar() {
+    const ci = document.getElementById('checkIn').value;
+    const co = document.getElementById('checkOut').value;
+    if (!ci || !co) {
+      openModal(); return;
+    }
+    if (new Date(co) <= new Date(ci)) {
+      alert('Check-out date must be after check-in date.');
+      return;
+    }
+    openModal();
+  }
+
+  // Modal form submission with validation
+  function submitBooking() {
+    let valid = true;
+    const ci = document.getElementById('mCheckIn').value;
+    const co = document.getElementById('mCheckOut').value;
+    const name = document.getElementById('mName').value.trim();
+    const email = document.getElementById('mEmail').value.trim();
+
+    // Reset errors
+    ['errCheckIn','errCheckOut','errName','errEmail','errGeneral'].forEach(id => {
+      document.getElementById(id).classList.remove('show');
+    });
+
+    if (!ci) { document.getElementById('errCheckIn').classList.add('show'); valid = false; }
+    if (!co || (ci && new Date(co) <= new Date(ci))) {
+      document.getElementById('errCheckOut').textContent = !co ? 'Please select check-out date' : 'Check-out must be after check-in';
+      document.getElementById('errCheckOut').classList.add('show'); valid = false;
+    }
+    if (!name) { document.getElementById('errName').classList.add('show'); valid = false; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById('errEmail').classList.add('show'); valid = false;
+    }
+
+    if (!valid) return;
+
+    // Success
+    document.getElementById('successName').textContent = name.split(' ')[0];
+    document.getElementById('modalForm').style.display = 'none';
+    document.getElementById('modalSuccess').classList.add('show');
+  }
+
+  // Testimonial slider
+  let currentSlide = 0;
+  const testimonials = document.querySelectorAll('.testimonial');
+  const dots = document.querySelectorAll('.slider-dot');
+
+  function goSlide(n) {
+    testimonials[currentSlide].classList.remove('active');
+    dots[currentSlide].classList.remove('active');
+    currentSlide = (n + testimonials.length) % testimonials.length;
+    testimonials[currentSlide].classList.add('active');
+    dots[currentSlide].classList.add('active');
+  }
+  function changeSlide(dir) { goSlide(currentSlide + dir); }
+  setInterval(() => changeSlide(1), 5000);
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
